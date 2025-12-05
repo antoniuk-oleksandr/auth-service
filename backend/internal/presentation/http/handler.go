@@ -1,3 +1,3 @@
 package http
 
-type Handler func(c HTTPContext) error
+type Handler func(ctx HTTPContext) error

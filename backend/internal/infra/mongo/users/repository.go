@@ -1,13 +1,13 @@
 package users
 
 import (
-	usersDomain "github.com/antoniuk-oleksandr/auth-service/backend/internal/domain/users"
-	"github.com/antoniuk-oleksandr/auth-service/backend/internal/logger"
 	"context"
 	"errors"
 
-	"go.mongodb.org/mongo-driver/bson/primitive"
+	usersDomain "github.com/antoniuk-oleksandr/auth-service/backend/internal/domain/users"
+	"github.com/antoniuk-oleksandr/auth-service/backend/internal/logger"
 
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/v2/bson"
 	"go.mongodb.org/mongo-driver/v2/mongo"
 )
@@ -35,10 +35,22 @@ func (repo *repository) FindByUsername(ctx context.Context, username string) (*u
 	err := repo.collection.FindOne(ctx, filter).Decode(&user)
 	if err != nil {
 		if errors.Is(err, mongo.ErrNoDocuments) {
+			repo.lgr.Warn("User not found",
+				logger.NewStringField("username", username),
+			)
 			return nil, usersDomain.ErrUserNotFound
 		}
+
+		repo.lgr.Error("Failed to find user by username",
+			logger.NewStringField("username", username),
+			logger.NewErrField(err),
+		)
 		return nil, usersDomain.ErrFailedToFindUser
 	}
+
+	repo.lgr.Info("User fetched successfully",
+		logger.NewStringField("username", username),
+	)
 
 	userDomain := repo.mapper.MapUserModelToDomain(user)
 	return &userDomain, nil
@@ -49,6 +61,10 @@ func (repo *repository) FindByID(ctx context.Context, id string) (*usersDomain.U
 
 	oid, err := bson.ObjectIDFromHex(id)
 	if err != nil {
+		repo.lgr.Error("Invalid user ID format",
+			logger.NewStringField("id", id),
+			logger.NewErrField(err),
+		)
 		return nil, err
 	}
 
@@ -56,10 +72,22 @@ func (repo *repository) FindByID(ctx context.Context, id string) (*usersDomain.U
 	err = repo.collection.FindOne(ctx, filter).Decode(&user)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
+			repo.lgr.Warn("User not found by ID",
+				logger.NewStringField("id", id),
+			)
 			return nil, usersDomain.ErrUserNotFound
 		}
+
+		repo.lgr.Error("Failed to find user by ID",
+			logger.NewStringField("id", id),
+			logger.NewErrField(err),
+		)
 		return nil, usersDomain.ErrFailedToFindUser
 	}
+
+	repo.lgr.Info("User fetched successfully by ID",
+		logger.NewStringField("id", id),
+	)
 
 	userDomain := repo.mapper.MapUserModelToDomain(user)
 	return &userDomain, nil
@@ -77,13 +105,26 @@ func (repo *repository) Create(
 		{Key: "passwordHash", Value: user.PasswordHash},
 	}
 
-	if _, err := repo.collection.InsertOne(ctx, doc); err != nil {
+	_, err := repo.collection.InsertOne(ctx, doc)
+	if err != nil {
 		if mongo.IsDuplicateKeyError(err) {
+			repo.lgr.Warn("Username is already taken",
+				logger.NewStringField("username", user.Username),
+			)
 			return nil, usersDomain.ErrUsernameTaken
 		}
 
+		repo.lgr.Error("Failed to create user",
+			logger.NewStringField("username", user.Username),
+			logger.NewErrField(err),
+		)
 		return nil, usersDomain.ErrFailedToCreateUser
 	}
+
+	repo.lgr.Info("User created successfully",
+		logger.NewStringField("id", id.Hex()),
+		logger.NewStringField("username", user.Username),
+	)
 
 	return &usersDomain.User{
 		ID:           id.Hex(),

@@ -2,6 +2,7 @@ package fiber
 
 import (
 	"context"
+
 	"github.com/antoniuk-oleksandr/auth-service/backend/internal/presentation/http"
 
 	fiberLib "github.com/gofiber/fiber/v2"
@@ -45,4 +46,20 @@ func (fc *FiberContext) Status(code int) http.HTTPContext {
 
 func (fc *FiberContext) String(code int, s string) error {
 	return fc.ctx.Status(code).SendString(s)
+}
+
+func (fc *FiberContext) Method() string {
+	return fc.ctx.Method()
+}
+
+func (fc *FiberContext) Next() error {
+	return fc.ctx.Next()
+}
+
+func (fc *FiberContext) Path() string {
+	return fc.ctx.Path()
+}
+
+func (fc *FiberContext) StatusCode() int {
+	return fc.ctx.Response().StatusCode()
 }

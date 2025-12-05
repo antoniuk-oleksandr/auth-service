@@ -1,14 +1,15 @@
 package auth
 
 import (
+	"context"
+	"errors"
+
 	authMapper "github.com/antoniuk-oleksandr/auth-service/backend/internal/application/auth/mapper"
 	authDomain "github.com/antoniuk-oleksandr/auth-service/backend/internal/domain/auth"
 	usersDomain "github.com/antoniuk-oleksandr/auth-service/backend/internal/domain/users"
 	"github.com/antoniuk-oleksandr/auth-service/backend/internal/logger"
 	"github.com/antoniuk-oleksandr/auth-service/backend/pkg/hasher"
 	uuidgeneator "github.com/antoniuk-oleksandr/auth-service/backend/pkg/uuid"
-	"context"
-	"errors"
 )
 
 type service struct {
@@ -39,28 +40,57 @@ func NewService(
 }
 
 func (s *service) Login(ctx context.Context, cmd authDomain.LoginCommand) (*authDomain.JWT, error) {
+	s.lgr.Info("Login attempt",
+		logger.NewStringField("username", cmd.Username),
+	)
+
 	user, err := s.usersService.GetUserByUsername(ctx, cmd.Username)
 	if err != nil {
 		if errors.Is(err, usersDomain.ErrUserNotFound) {
+			s.lgr.Warn("Invalid credentials: user not found",
+				logger.NewStringField("username", cmd.Username),
+			)
 			return nil, authDomain.ErrInvalidCredentials
 		}
-
 		return nil, err
 	}
 
-	err = s.hasher.Compare(cmd.Password, user.PasswordHash)
-	if err != nil {
+	if err := s.hasher.Compare(cmd.Password, user.PasswordHash); err != nil {
+		s.lgr.Warn("Invalid credentials: wrong password",
+			logger.NewStringField("username", cmd.Username),
+		)
 		return nil, authDomain.ErrInvalidCredentials
 	}
 
 	jti := s.uuidGenerator.Generate()
+	jwt, err := s.jwtManager.SignTokens(user.ID, jti)
+	if err != nil {
+		s.lgr.Error("Failed to sign JWT tokens",
+			logger.NewStringField("username", cmd.Username),
+			logger.NewErrField(err),
+		)
+		return nil, authDomain.ErrInvalidCredentials
+	}
 
-	return s.jwtManager.SignTokens(user.ID, jti)
+	s.lgr.Info("Login successful",
+		logger.NewStringField("user_id", user.ID),
+		logger.NewStringField("username", cmd.Username),
+	)
+
+	return jwt, nil
 }
 
 func (s *service) Register(ctx context.Context, cmd authDomain.RegisterCommand) (*authDomain.JWT, error) {
+	s.lgr.Info("User registration attempt",
+		logger.NewStringField("username", cmd.Username),
+	)
+
 	hashedPassword, err := s.hasher.Hash(cmd.Password)
 	if err != nil {
+		s.lgr.Error("Failed to hash password",
+			logger.NewStringField("username", cmd.Username),
+			logger.NewErrField(err),
+		)
 		return nil, authDomain.ErrInvalidCredentials
 	}
 
@@ -68,15 +98,31 @@ func (s *service) Register(ctx context.Context, cmd authDomain.RegisterCommand) 
 
 	createdUser, err := s.usersService.CreateUser(ctx, userDto)
 	if err != nil {
+		// repo already logs DB errors
+		if errors.Is(err, usersDomain.ErrUsernameTaken) {
+			s.lgr.Warn("Username already taken",
+				logger.NewStringField("username", cmd.Username),
+			)
+			return nil, err
+		}
+
 		return nil, err
 	}
 
 	jti := s.uuidGenerator.Generate()
-
 	jwt, err := s.jwtManager.SignTokens(createdUser.ID, jti)
 	if err != nil {
+		s.lgr.Error("Failed to sign JWT tokens",
+			logger.NewStringField("username", cmd.Username),
+			logger.NewErrField(err),
+		)
 		return nil, authDomain.ErrInvalidCredentials
 	}
 
-	return jwt, err
+	s.lgr.Info("User registered successfully",
+		logger.NewStringField("user_id", createdUser.ID),
+		logger.NewStringField("username", createdUser.Username),
+	)
+
+	return jwt, nil
 }

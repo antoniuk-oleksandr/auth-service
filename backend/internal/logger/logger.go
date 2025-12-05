@@ -9,30 +9,38 @@ type (
 )
 
 const (
-	StringField FieldType = iota
-	IntField
-	FloatField
-	BoolField
-	ErrorField
-	AnyField
+	StringField = loggeriface.StringField
+	IntField = loggeriface.IntField
+	FloatField = loggeriface.FloatField
+	BoolField = loggeriface.BoolField
+	ErrorField = loggeriface.ErrorField
+	AnyField = loggeriface.AnyField
 )
 
-func String(key, val string) Field {
+func NewField(key string, val any, t FieldType) Field {
+	return Field{Key: key, Type: t, Value: val}
+}
+
+func NewStringField(key, val string) Field {
 	return Field{Key: key, Type: StringField, Value: val}
 }
 
-func Int(key string, val int) Field {
+func NewIntField(key string, val int) Field {
 	return Field{Key: key, Type: IntField, Value: val}
 }
 
-func Bool(key string, val bool) Field {
+func NewBoolField(key string, val bool) Field {
 	return Field{Key: key, Type: BoolField, Value: val}
 }
 
-func Float(key string, val float64) Field {
+func NewFloatField(key string, val float64) Field {
 	return Field{Key: key, Type: FloatField, Value: val}
 }
 
-func Err(err error) Field {
+func NewErrField(err error) Field {
 	return Field{Key: "error", Type: ErrorField, Value: err}
+}
+
+func NewAnyField(key string, val any) Field {
+	return Field{Key: key, Type: AnyField, Value: val}
 }

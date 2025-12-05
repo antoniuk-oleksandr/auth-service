@@ -10,4 +10,8 @@ type HTTPContext interface {
 	BindJSON(obj any) error
 	Status(code int) HTTPContext
 	Context() context.Context
+	Method() string
+	Path() string
+	StatusCode() int
+	Next() error
 }

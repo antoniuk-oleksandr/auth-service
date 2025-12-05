@@ -49,7 +49,7 @@ func registerCTPRoutes(
 	registry.Register()
 }
 
-func startCTPServer(srv types.Server, cfg *config.AppConfig) error {
+func startCTPServer(srv types.Server, cfg *config.AppConfig, lgr logger.Logger) error {
 	return srv.Start(":" + cfg.Server.Port)
 }
 

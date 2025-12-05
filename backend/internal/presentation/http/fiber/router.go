@@ -2,6 +2,7 @@ package fiber
 
 import (
 	"fmt"
+
 	"github.com/antoniuk-oleksandr/auth-service/backend/internal/presentation/http"
 
 	fiberLib "github.com/gofiber/fiber/v2"
@@ -20,6 +21,10 @@ func NewFiberRouter(config any) (http.HTTPRouter, error) {
 	return &FiberRouter{
 		app: fiberLib.New(cfg),
 	}, nil
+}
+
+func (f *FiberRouter) Use(middleware any) {
+	f.app.Use(middleware)
 }
 
 func (f *FiberRouter) Start(address string) error {

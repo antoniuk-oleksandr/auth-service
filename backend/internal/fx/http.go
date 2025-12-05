@@ -1,13 +1,16 @@
 package fxmodules
 
 import (
+	"fmt"
+
 	"github.com/antoniuk-oleksandr/auth-service/backend/internal/config"
+	"github.com/antoniuk-oleksandr/auth-service/backend/internal/logger"
 	routesRegistry "github.com/antoniuk-oleksandr/auth-service/backend/internal/presentation/common/registry"
 	"github.com/antoniuk-oleksandr/auth-service/backend/internal/presentation/http"
 	authHttp "github.com/antoniuk-oleksandr/auth-service/backend/internal/presentation/http/fiber/auth"
+	"github.com/antoniuk-oleksandr/auth-service/backend/internal/presentation/http/fiber/middleware"
 	usersHttp "github.com/antoniuk-oleksandr/auth-service/backend/internal/presentation/http/fiber/users"
 	router "github.com/antoniuk-oleksandr/auth-service/backend/internal/presentation/http/router"
-	"fmt"
 
 	"go.uber.org/fx"
 )
@@ -22,17 +25,22 @@ var HTTPModule = fx.Module("http",
 	fx.Invoke(provideUsersRoutes),
 	fx.Invoke(provideAuthRoutes),
 	fx.Invoke(registerHTTPRoutes),
+	fx.Invoke(provideHTTPLogger),
 
 	fx.Invoke(startServer),
 )
 
-func provideRouter(cfg *config.AppConfig) (http.HTTPRouter, error) {
+func provideRouter(cfg *config.AppConfig, lgr logger.Logger) (http.HTTPRouter, error) {
 	switch cfg.Server.HTTPFramework {
 	case "fiber":
-		return router.NewHTTPRouter(cfg.Server.HTTPFramework, config.NewFiberConfig())
+		return router.NewHTTPRouter(cfg.Server.HTTPFramework, config.NewFiberConfig(lgr))
 	default:
 		return nil, fmt.Errorf("unsupported HTTP framework: %s", cfg.Server.HTTPFramework)
 	}
+}
+
+func provideHTTPLogger(r http.HTTPRouter, lgr logger.Logger) {
+	r.Use(middleware.NewRequestLogger(lgr))
 }
 
 func startServer(r http.HTTPRouter, cfg *config.AppConfig) error {
