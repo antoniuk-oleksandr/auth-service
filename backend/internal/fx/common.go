@@ -2,11 +2,11 @@ package fxmodules
 
 import (
 	"github.com/antoniuk-oleksandr/auth-service/backend/internal/config"
-	envparser "github.com/antoniuk-oleksandr/auth-service/backend/internal/env_parser"
 	"github.com/antoniuk-oleksandr/auth-service/backend/internal/logger"
 	"github.com/antoniuk-oleksandr/auth-service/backend/pkg/hasher"
 	uuidgeneator "github.com/antoniuk-oleksandr/auth-service/backend/pkg/uuid"
-	"github.com/antoniuk-oleksandr/auth-service/backend/pkg/validator/validatorv10"
+	commoncaarlos0_env "github.com/antoniuk-oleksandr/auth-service/common/env_parser/caarlos0_env"
+	commonvalidatorv10 "github.com/antoniuk-oleksandr/auth-service/common/validator/validatorv10"
 
 	"github.com/joho/godotenv"
 	"go.uber.org/fx"
@@ -15,8 +15,8 @@ import (
 var CommonModule = fx.Module("common",
 	fx.Invoke(loadEnv),
 	fx.Provide(
-		envparser.New,
-		validatorv10.New,
+		commoncaarlos0_env.New,
+		commonvalidatorv10.New,
 		config.LoadAppConfig,
 		provideLogger,
 		uuidgeneator.New,

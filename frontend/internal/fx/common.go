@@ -21,11 +21,14 @@ var CommonMovdule = fx.Module("common",
 	),
 )
 
-func proideAppConfig(v commonvalidator.Validator, parser commonenvparser.EnvParser) *config.AppConfig {
+func proideAppConfig(v commonvalidator.Validator, parser commonenvparser.EnvParser) (*config.AppConfig, error){
 	var cfg config.AppConfig
-	commonconfig.LoadAppConfig(v, parser, &cfg)
-
-	return &cfg
+	err := commonconfig.LoadAppConfig(v, parser, &cfg)
+	if err != nil {
+		return nil, err
+	}
+	
+	return &cfg, nil
 }
 
 func loadEnv() {

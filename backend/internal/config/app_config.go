@@ -1,8 +1,8 @@
 package config
 
 import (
-	envparser "github.com/antoniuk-oleksandr/auth-service/backend/internal/env_parser"
-	val "github.com/antoniuk-oleksandr/auth-service/backend/pkg/validator"
+	envparser "github.com/antoniuk-oleksandr/auth-service/common/env_parser"
+	val "github.com/antoniuk-oleksandr/auth-service/common/validator"
 )
 
 type MongoConfig struct {
