@@ -1,0 +1,30 @@
+package component
+
+import (
+	common "github.com/antoniuk-oleksandr/auth-service/frontend/internal/view/component"
+	"context"
+	"io"
+)
+
+templ CTASection() {
+	<div
+		class="rounded-3xl p-10 bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700
+                text-white text-center shadow-xl flex flex-col items-center gap-5"
+	>
+		<h2 class="text-xl font-medium">Get Started Today</h2>
+		<p class="max-w-xl text-white/80 text-sm sm:text-base">
+			Join thousands of users who trust SecureAuth for their authentication needs.
+		</p>
+		<div class="flex flex-col sm:flex-row gap-4 mt-4">
+			@common.ButtonLink("white-outline", "/register", templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
+				return common.Text("Create Account").Render(ctx, w)
+			}))
+			@common.ButtonLink("white-outline", "/login", templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
+				return common.Text("Sign In").Render(ctx, w)
+			}))
+		</div>
+	</div>
+}
+
+templ Register() {
+}

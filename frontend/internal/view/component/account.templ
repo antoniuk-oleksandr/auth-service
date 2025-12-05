@@ -1,0 +1,8 @@
+package component
+
+templ AccountMessage(message, path, text string) {
+	<div class="w-full text-center text-sm text-gray-600 mt-4">
+		<span>{ message }</span>
+		@Link(text, path)
+	</div>
+}

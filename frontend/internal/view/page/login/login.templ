@@ -1,0 +1,27 @@
+package login
+
+import (
+	"github.com/antoniuk-oleksandr/auth-service/frontend/internal/view/component"
+	"github.com/antoniuk-oleksandr/auth-service/frontend/internal/view/layout"
+	"context"
+	"io"
+)
+
+templ loginContent() {
+	<div class="max-w-sm mx-auto mt-20 x">
+		@component.Form("/api/v1/auth/sessions", "POST",
+			templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
+				return templ.Join(
+					component.Input("username", "Username", "username", "username"),
+					component.Input("password", "Password", "password", "password"),
+					component.AccountMessage("Don't have an account?", "/register", "Register"),
+					component.Button("primary", component.Text("Login")),
+				).Render(context.Background(), w)
+			}),
+		)
+	</div>
+}
+
+templ LoginPage() {
+	@layout.Base(loginContent())
+}

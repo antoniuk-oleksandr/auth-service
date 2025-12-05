@@ -1,0 +1,15 @@
+package component
+
+templ Form(action, method string, content templ.Component) {
+	<form
+		action={ action }
+		method={ method }
+		hx-post={ action }
+		hx-trigger="submit"
+		hx-ext="json-enc"
+		hx-swap="none"
+		class="space-y-4 bg-white p-6 rounded-lg ring-1 ring-neutral-600"
+	>
+		@content
+	</form>
+}

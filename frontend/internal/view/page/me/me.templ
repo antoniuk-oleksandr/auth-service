@@ -1,0 +1,14 @@
+package me
+
+import "github.com/antoniuk-oleksandr/auth-service/frontend/internal/view/layout"
+
+templ meContent() {
+	<div>
+		<h1 class="text-2xl font-bold mb-4">User Dashboard</h1>
+		<p>Welcome to your dashboard! Here you can manage your account and view your activity.</p>
+	</div>
+}
+
+templ MePage() {
+	@layout.Base(meContent())
+}

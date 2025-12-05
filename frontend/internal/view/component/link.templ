@@ -1,0 +1,12 @@
+package component
+
+templ Link(text, path string) {
+	<a
+		href={ path }
+		hx-get={ path }
+		class=" hover:underline"
+		hx-target="body"
+		hx-push-url="true"
+		hx-swap="innerHTML"
+	>{text}</a>
+}

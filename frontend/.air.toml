@@ -1,0 +1,15 @@
+root = "."
+tmp_dir = "tmp"
+
+[build]
+cmd = "./scripts/generate_if_changed.sh && go build -o ./tmp/main ./cmd/auth-frontend"
+bin = "tmp/main"
+
+include_ext = ["go", "env", "templ"]
+exclude_dir = ["tmp", "vendor"]
+
+delay = 1000
+
+[watch]
+cmd = "./scripts/generate_if_changed.sh && go build -o ./tmp/main ./cmd/auth-frontend"
+ignore = ["internal/view/**/*_templ.go", "tmp/*", "vendor/*"]

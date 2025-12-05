@@ -1,0 +1,9 @@
+infra/dev/.env
+backend/.env
+frontend/.env
+ctp/.env
+
+backend/tmp
+frontend/tmp
+
+*_templ.go

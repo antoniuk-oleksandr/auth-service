@@ -1,0 +1,17 @@
+package home
+
+import "github.com/antoniuk-oleksandr/auth-service/frontend/internal/view/layout"
+import "github.com/antoniuk-oleksandr/auth-service/frontend/internal/view/page/home/component"
+
+templ homeContent() {
+	<div class="flex flex-col gap-20 text-neutral-900 py-10">
+		@component.HeroSection()
+		@component.FeaturesSection()
+		@component.CTASection()
+		@component.StatsSection()
+	</div>
+}
+
+templ HomePage() {
+	@layout.Base(homeContent())
+}

@@ -1,0 +1,18 @@
+package component
+
+templ FeaturesSection() {
+	<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+		@FeatureCard(
+			"Clean Architecture",
+			"Structured with domain, application, and presentation layers.",
+		)
+		@FeatureCard(
+			"Go-Powered Backend",
+			"Fast, simple, and reliable – built with Fiber and pure Go.",
+		)
+		@FeatureCard(
+			"HTMX + Templ Frontend",
+			"Lightweight interactions with server-side UI rendering.",
+		)
+	</div>
+}

@@ -1,0 +1,19 @@
+package component
+
+import "github.com/antoniuk-oleksandr/auth-service/frontend/internal/view/helper"
+
+templ ButtonLink(variant string, href string, content templ.Component) {
+	<a
+		href={ href }
+		class={ helper.VariantClasses(variant) + `
+	        inline-flex items-center justify-center
+	        px-5 py-2.5 text-sm font-medium rounded-lg shadow-sm
+	        focus:outline-none focus:ring-2 focus:ring-offset-2
+	        active:scale-[0.98]
+	        transition duration-200 ease-out
+	        w-full
+        ` }
+	>
+		@content
+	</a>
+}

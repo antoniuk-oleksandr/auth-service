@@ -1,0 +1,20 @@
+package layout
+
+templ Base(page templ.Component) {
+	<html>
+		<head>
+			<title>SecureAuth</title>
+			<meta charset="UTF-8"/>
+			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+			<script src="https://unpkg.com/htmx.org@2.0.2"></script>
+			<script src="https://cdn.tailwindcss.com"></script>
+			<script src="https://unpkg.com/htmx.org/dist/ext/json-enc.js"></script>
+			<script src="/static/js/htmx-events.js"></script>
+		</head>
+		<body class="bg-[linear-gradient(to_right_bottom,#eef2ff,#ffffff,#f0f7ff)] min-h-screen">
+			<div class="mx-auto w-full max-w-screen-xl px-4 sm:px-6 lg:px-8 py-8">
+				@page
+			</div>
+		</body>
+	</html>
+}
