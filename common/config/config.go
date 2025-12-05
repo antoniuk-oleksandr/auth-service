@@ -1,8 +1,8 @@
 package commonconfig
 
 import (
-	envparser "auth-common/env_parser"
-	val "auth-common/validator"
+	envparser "github.com/antoniuk-oleksandr/auth-service/common/env_parser"
+	val "github.com/antoniuk-oleksandr/auth-service/common/validator"
 )
 
 func LoadAppConfig(v val.Validator, parser envparser.EnvParser, cfg any) error {

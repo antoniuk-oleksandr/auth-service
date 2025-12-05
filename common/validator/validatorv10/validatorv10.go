@@ -1,7 +1,7 @@
 package commonvalidatorv10
 
 import (
-	commonvalidator "auth-common/validator"
+	commonvalidator "github.com/antoniuk-oleksandr/auth-service/common/validator"
 
 	val "github.com/go-playground/validator/v10"
 )

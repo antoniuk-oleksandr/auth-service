@@ -1,11 +1,11 @@
 package fxmodules
 
 import (
-	commonconfig "auth-common/config"
-	commonenvparser "auth-common/env_parser"
-	commoncaarlos0_env "auth-common/env_parser/caarlos0_env"
-	commonvalidator "auth-common/validator"
-	commonvalidatorv10 "auth-common/validator/validatorv10"
+	commonconfig "github.com/antoniuk-oleksandr/auth-service/common/config"
+	commonenvparser "github.com/antoniuk-oleksandr/auth-service/common/env_parser"
+	commoncaarlos0_env "github.com/antoniuk-oleksandr/auth-service/common/env_parser/caarlos0_env"
+	commonvalidator "github.com/antoniuk-oleksandr/auth-service/common/validator"
+	commonvalidatorv10 "github.com/antoniuk-oleksandr/auth-service/common/validator/validatorv10"
 	"github.com/antoniuk-oleksandr/auth-service/frontend/internal/config"
 
 	"github.com/joho/godotenv"

@@ -1,7 +1,7 @@
 package commoncaarlos0_env
 
 import (
-	commonenvparser "auth-common/env_parser"
+	commonenvparser "github.com/antoniuk-oleksandr/auth-service/common/env_parser"
 
 	"github.com/caarlos0/env/v6"
 )
