@@ -68,6 +68,6 @@ func provideStaticFiles(app *fiber.App) {
 	app.Static("/static", "./internal/presentation/fiber/static")
 }
 
-func startFiberApp(app *fiber.App, cfg *config.AppConfig) {
-	app.Listen(":" + cfg.ServerConfig.Port)
+func startFiberApp(app *fiber.App, cfg *config.AppConfig) error {
+	return app.Listen(":" + cfg.ServerConfig.Port)
 }
